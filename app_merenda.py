@@ -2,6 +2,7 @@ from fastapi import FastAPI, APIRouter
 import uvicorn
 import mysql.connector
 from hashlib import sha256
+app = FastAPI(swagger_ui_parameters={"deepLinking": False})
 
 router = APIRouter(prefix="/principal")
 
@@ -17,11 +18,11 @@ try:
 except mysql.connector.Error as err:
     print(f"Erro ao conectar ao banco de dados: {err}")
 
-app = FastAPI()
+#app = FastAPI() #isso não é aqui
 
 app.include_router(router)
 
-@router.post("/cadastrar_usuario/")
+@app.post("/cadastrar_usuario/")
 def cadastrar_usuario(id_usuario: int, nome_usuario: str, tipo: int, senha: str):
     if mydb:
         cursor = mydb.cursor()
@@ -41,7 +42,7 @@ def cadastrar_usuario(id_usuario: int, nome_usuario: str, tipo: int, senha: str)
     else:
         return { 'message': 'Você não está autorizado a cadastrar um novo usuário.' }
 
-@router.get("/buscar_aluno/")
+@app.get("/buscar_aluno/")
 def buscar_aluno(matricula: int):
     if mydb:
         cursor = mydb.cursor()
